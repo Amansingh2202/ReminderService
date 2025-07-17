@@ -3,6 +3,9 @@ const express=require('express');
 const bodyParser=require('body-parser')
 const {PORT}=require('./config/configServer')
 const {sendBasicEmail}=require('./services/email-service')
+const  TicketController= require('./controllers/ticket-controller.js')
+
+const setupJobs=require('./utils/job')
 
 const setupStartServer=()=>{
        const app=express();
@@ -12,6 +15,9 @@ const setupStartServer=()=>{
 
        app.listen(PORT,()=>{
           console.log(`Server started at PORT:${PORT}`)
+          setupJobs()
+
+          app.post('/api/v1/tickets',TicketController.create) 
 
         //   sendBasicEmail(
         //     'support@admin.com',
