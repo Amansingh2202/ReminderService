@@ -49,7 +49,7 @@ class TicketRepository{
       }
       async update(ticketId,data){
         try{
-                       const ticket=await Notification.findByPk(ticketId)
+                       const ticket=await NotificationTicket.findByPk(ticketId)
                        if(data.status){
                        ticket.status=data.status}
                        await ticket.save()
