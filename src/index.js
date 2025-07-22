@@ -1,11 +1,13 @@
 const express=require('express');
 
 const bodyParser=require('body-parser')
-const {PORT}=require('./config/configServer')
+const {PORT, REMINDER_BINDING_KEY}=require('./config/configServer')
 const {sendBasicEmail}=require('./services/email-service')
 const  TicketController= require('./controllers/ticket-controller.js')
 
-const {createChannel}= require('./utils/messageQueue.js')
+const {createChannel, subscribeMessage}= require('./utils/messageQueue.js')
+
+const EmailService=require('./services/email-service.js')
 
 const setupJobs=require('./utils/job')
 
@@ -14,7 +16,8 @@ const setupStartServer=async ()=>{
        app.use(bodyParser.json())
        app.use(bodyParser.urlencoded({extended:true}));
 
-      //  const channel=await createChannel()
+       const channel=await createChannel()
+       subscribeMessage(channel,EmailService.subscribeEvent,REMINDER_BINDING_KEY)
 
 
        app.listen(PORT,()=>{

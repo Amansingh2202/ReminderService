@@ -1,6 +1,7 @@
 const sender=require('../config/emailConfig')
 const TicketRepository=require('../repository/ticket-repository')
 
+
 const repo= new TicketRepository()
 
 const sendBasicEmail=async (mailfrom,mailto,mailSubject,mailBody)=>{
@@ -32,7 +33,7 @@ const fetchPendingEmails= async (timestamp)=>{
 }      
 
 
-     const createNotificatoin=async (data)=>{
+     const createNotification=async (data)=>{
           try{
                   const response = await repo.create(data)
                   return response 
@@ -49,7 +50,31 @@ const fetchPendingEmails= async (timestamp)=>{
     }catch(error){
              console.log(error)
     }
+
   }
+
+
+
+    const subscribeEvent=async (payload)=>{
+       
+   
+        let data =payload.data;
+        let  service =payload.service;
+        switch(service){
+          case 'CREATE_TICKET':
+             await  createNotification(data);
+             break;
+          case 'SEND_BASIC_MAIL':
+            await sendBasicEmail(data);
+            break;
+            default :
+            console.log('NO valid event received');
+            break;
+        }
+      }
+
+
+  
 
 
 
@@ -58,8 +83,9 @@ const fetchPendingEmails= async (timestamp)=>{
 module.exports={
   sendBasicEmail,
   fetchPendingEmails,
-  createNotificatoin,
-  updateTicket
+  createNotification,
+  updateTicket,
+   subscribeEvent,
 }
 
 
